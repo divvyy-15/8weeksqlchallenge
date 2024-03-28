@@ -37,3 +37,9 @@ ALTER TABLE runner_orders_1
 ALTER COLUMN pickup_time datetime,
 ALTER COLUMN distance numeric,
 ALTER COLUMN duration int;
+
+
+--Also need to change the datatype of pizza_name column from text to varchar:
+
+alter table pizza_names
+alter column pizza_name varchar(11)
