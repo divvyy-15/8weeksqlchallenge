@@ -17,11 +17,17 @@ group by order_id,order_time,pickup_time)
 select pizza_count,avg(prep_time) as avg_prep_time_required from cte_prep_time
 group by pizza_count
 
+-->More the number of pizzas orders,the longer it takes to prepare the pizza
+
+  
 --4. What was the average distance travelled for each customer?
 select customer_id,cast(avg(distance)as decimal(10,2)) as avg_distance_travelled from delivered_orders
 group by customer_id
 order by 2 desc
 
+-->Customer 105 lives the farthest while the customer 104 lives the closes, distance wise
+
+  
 --5. What was the difference between the longest and shortest delivery times for all orders?
 select max(duration)-min(duration) as diff_in_longest_shortest_del_time from delivered_orders
 
@@ -32,4 +38,7 @@ FROM delivered_orders
 GROUP BY order_id,runner_id
 ORDER BY runner_id;
 
+--7. What is the successful delivery percentage for each runner?
+select runner_id,cast(count(distance)*100/count(order_id) as decimal(10,2)) as successful_delivery_perc from runner_orders_1
+group by runner_id
 
