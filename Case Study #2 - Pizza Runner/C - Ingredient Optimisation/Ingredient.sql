@@ -58,6 +58,37 @@ order by 2 desc
 
 -->The most common exclusion was Cheese.
 
+--4. Generate an order item for each record in the customers_orders table in the format of one of the following:
+/* Meat Lovers
+Meat Lovers - Exclude Beef
+Meat Lovers - Extra Bacon
+Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers */
+
+with extras_detail as
+(select e.ord_id,co.pizza_id as pizza_id,string_agg(pt.topping_name,',') as added_extra from customer_orders1 co
+inner join extras e
+on e.ord_id = co.ord_id
+inner join pizza_toppings pt
+on pt.topping_id = e.extra_id
+group by e.ord_id,co.pizza_id)
+
+,exclusions_detail as
+(select exl.ord_id,co.pizza_id as pizza_id,string_agg(pt.topping_name,',') as excluded from customer_orders1 co
+inner join exclusions exl
+on exl.ord_id = co.ord_id
+inner join pizza_toppings pt
+on pt.topping_id = exl.exclusion_id
+group by exl.ord_id,co.pizza_id)
+
+
+select concat(pn.pizza_name,coalesce('- Extra ' + ext.added_extra,''),coalesce('- Exclude ' + exc.excluded,'')) as order_details
+from customer_orders1 co
+left join extras_detail ext on ext.ord_id = co.ord_id and ext.pizza_id=co.pizza_id 
+left join exclusions_detail exc on exc.ord_id = co.ord_id and exc.pizza_id=co.pizza_id 
+inner join pizza_names pn on co.pizza_id = pn.pizza_id
+where co.pizza_id=1
+
+
 
 
 
